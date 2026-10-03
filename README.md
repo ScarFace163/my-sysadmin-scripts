@@ -1,2 +1,1 @@
-# my-sysadmin-scripts
-my-sysadmin-scripts
+Скрипт каждые пять секунд записывает в monitor.log время, состояние памяти, дисков и нагрузку системы.
