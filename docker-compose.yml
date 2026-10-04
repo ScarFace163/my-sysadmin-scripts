@@ -1,0 +1,10 @@
+services:
+  monitor:
+    build: .
+    image: my-script
+    volumes:
+      - type: bind
+        source: /mnt/logs
+        target: /data
+        bind:
+          create_host_path: false
