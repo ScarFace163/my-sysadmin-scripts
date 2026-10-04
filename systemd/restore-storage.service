@@ -1,0 +1,12 @@
+[Unit]
+Description=Restore lab RAID and LVM mounts
+After=local-fs.target
+Before=my-app.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/restore-storage.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
