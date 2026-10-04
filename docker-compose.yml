@@ -2,6 +2,9 @@ services:
   monitor:
     build: .
     image: my-script
+    container_name: my-app
+    ports:
+      - "127.0.0.1:8080:8080"
     volumes:
       - type: bind
         source: /mnt/logs

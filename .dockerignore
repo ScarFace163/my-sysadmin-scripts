@@ -1,8 +1,4 @@
-.git
-*.log
-*.img
-sample_output.txt
-README.md
-setup-storage.sh
-part1_output.txt
-screenshots.md
+*
+!Dockerfile
+!script.sh
+!start-service.sh
