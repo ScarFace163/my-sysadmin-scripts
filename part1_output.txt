@@ -1,0 +1,66 @@
+Часть 1 ДЗ2 — проверка на sysadmin-host (Ubuntu 22.04.5 LTS)
+
+Сборка:
+sudo docker build -t my-script .
+Результат: Successfully built f170a564a02b; Successfully tagged my-script:latest.
+Сборка через sudo docker compose build также завершилась успешно.
+
+Команды проверки:
+sudo docker compose version
+sudo docker image ls my-script
+sudo docker run -e MAX_SAMPLES=1 my-script bash -c '/usr/local/bin/script.sh && cat /data/monitor.log'
+sudo docker ps -a --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'
+cat /proc/mdstat
+sudo vgs
+sudo lvs
+df -h /mnt/raid /mnt/logs
+sudo docker compose ps
+sudo docker compose exec -T monitor df -h /data
+
+Вывод:
+Docker Compose version 2.40.3+ds1-0ubuntu1~22.04.1
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+IMAGE              ID             DISK USAGE   CONTENT SIZE   EXTRA
+my-script:latest   879cd35de8a9        107MB         27.7MB        
+--- 2026-10-04 10:48:54 ---
+               total        used        free      shared  buff/cache   available
+Mem:           1.9Gi       251Mi       221Mi       1.0Mi       1.5Gi       1.6Gi
+Swap:             0B          0B          0B
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         9.6G  3.3G  6.3G  34% /
+tmpfs            64M     0   64M   0% /dev
+shm              64M     0   64M   0% /dev/shm
+/dev/sda1       9.6G  3.3G  6.3G  34% /etc/hosts
+tmpfs           984M     0  984M   0% /proc/acpi
+tmpfs           984M     0  984M   0% /proc/scsi
+tmpfs           984M     0  984M   0% /sys/devices/virtual/powercap
+tmpfs           984M     0  984M   0% /sys/firmware
+ 10:48:54 up  3:07,  0 users,  load average: 0.15, 0.21, 0.18
+
+NAMES                           IMAGE          STATUS
+determined_ride                 my-script      Up Less than a second
+my-sysadmin-scripts-monitor-1   f170a564a02b   Up 28 minutes
+sad_boyd                        f170a564a02b   Exited (0) 29 minutes ago
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10] 
+md0 : active raid1 loop4[1] loop3[0]
+      523264 blocks super 1.2 [2/2] [UU]
+      
+unused devices: <none>
+  VG      #PV #LV #SN Attr   VSize   VFree  
+  vg_data   1   1   0 wz--n- 508.00m 308.00m
+  LV      VG      Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv_logs vg_data -wi-ao---- 200.00m                                                    
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/md0                     463M   24K  427M   1% /mnt/raid
+/dev/mapper/vg_data-lv_logs  172M  108K  158M   1% /mnt/logs
+NAME                            IMAGE                                                                     COMMAND                  SERVICE   CREATED          STATUS          PORTS
+my-sysadmin-scripts-monitor-1   sha256:f170a564a02b6d18e86a6e7418bf26b37ef3507256cd3976960ce2f761e99cbd   "/usr/local/bin/scri…"   monitor   28 minutes ago   Up 28 minutes   
+Filesystem                   Size  Used Avail Use% Mounted on
+/dev/mapper/vg_data-lv_logs  172M  108K  158M   1% /data
+
+Проверка сохранности после пересоздания контейнера:
+Old container: 6719f4535e684d0c53df9f0f317994e789729eef5d549e1a916e6ed94bd6047e
+New container: 4c0c0d029eccd110f7976608ee5ab4c197b48eba1506d597a3fcb57860e1cbf3
+Preserved log: 9180 bytes
+Current log: 10098 bytes
+Побайтовое сравнение прежнего содержимого с началом нового лога прошло успешно.
